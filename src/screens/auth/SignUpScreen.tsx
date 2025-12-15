@@ -1,104 +1,122 @@
-import { 
-    View,
-    Text, 
-    TouchableWithoutFeedback,
-    KeyboardAvoidingView,
-    Platform,
-    Keyboard,
-    Image,
-    TextInput,
-    TouchableOpacity
-} from 'react-native'
+import {
+  View,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { AppDispatch } from '../../store/store';
+import signup from '../../features/auth/authSlice';
 
 const SignUpScreen = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+  // States.
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const handleLogin = async () => {
-        setIsLoading(true);
-        // Handle login logic here
-        setIsLoading(false);
+  // Variables.
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleLogin = async () => {
+    try {
+      setIsLoading(true);
+      const response = await dispatch(signup({ name, email, password }));
+      console.log('Signup response:', response);
+    } catch (error) {
+      
+    } finally {
+      setIsLoading(false);
     }
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <View>
-          {/* Login Form */}
-          <View>
+        <View style={styles.container}>
+          <Text style={styles.title}>Create Account</Text>
 
-            <View>
-              <View>
-                <TextInput
-                  placeholder="name"
-                  value={name}
-                  onChangeText={setName}
-                  keyboardType="default"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-              </View>
-            </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Name"
+            value={name}
+            onChangeText={setName}
+          />
 
-            <View>
-              <View>
-                <TextInput
-                  placeholder="Email address"
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-              </View>
-            </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Email address"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
 
-            <View>
-              <View>
-                <TextInput
-                  placeholder="Password"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-                <TouchableOpacity
-                  onPress={() => setShowPassword(!showPassword)}
-                >
-                </TouchableOpacity>
-              </View>
-            </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+            autoCapitalize="none"
+          />
 
-            {/* Forgot password */}
-            {/* <View>
-              <TouchableOpacity onPress={() => router.push('/forgot-password')}>
-                <ThemedText style={styles.forgotPasswordText}>Forgot password?</ThemedText>
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              style={[
-                styles.loginButton,
-                isLoading && styles.loginButtonDisabled
-              ]}
-              onPress={handleLogin}
-              disabled={isLoading}
-            >
-              <ThemedText style={styles.loginButtonText}>
-                {isLoading ? 'Signing In...' : 'Sign In'}
-              </ThemedText>
-            </TouchableOpacity> */}
-          </View> 
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleLogin}
+            disabled={isLoading}
+          >
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
-  )
-}
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 30,
+  },
+  input: {
+    width: '100%',
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  button: {
+    backgroundColor: '#000',
+    paddingVertical: 14,
+    paddingHorizontal: 40,
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
 
 export default SignUpScreen;

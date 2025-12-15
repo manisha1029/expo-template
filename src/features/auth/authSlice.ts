@@ -22,7 +22,7 @@ const initialState: InitialStateProps = {
 };
 
 // Async thunk
-export const signupAsync = createAsyncThunk('auth/signup', async (userData:User) => {
+export const signup = createAsyncThunk<User, User>('auth/signup', async (userData:User) => {
   const response = await signUpUser(userData)
   return response; 
 });
@@ -33,14 +33,14 @@ const authSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(signupAsync.pending, (state) => {
+      .addCase(signup.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(signupAsync.fulfilled, (state, action) => {
+      .addCase(signup.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.user = action.payload;
       })
-      .addCase(signupAsync.rejected, (state, action) => {
+      .addCase(signup.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message ?? null;
       });
