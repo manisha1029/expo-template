@@ -1,13 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
 import { signUpUser } from '../../services/auth/auth';
 
-interface User {
+export interface User {
   name: string;
   email: string;
   password: string;
 }
 
-interface InitialStateProps {
+export interface InitialStateProps {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
   user: User | null;
@@ -22,7 +23,7 @@ const initialState: InitialStateProps = {
 };
 
 // Async thunk
-export const signup = createAsyncThunk<User, User>('auth/signup', async (userData:User) => {
+export const signup = createAsyncThunk<User, User>('signup', async (userData:User) => {
   const response = await signUpUser(userData)
   return response; 
 });
@@ -30,7 +31,11 @@ export const signup = createAsyncThunk<User, User>('auth/signup', async (userDat
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    signup: (state)=>{
+      
+    }
+  },
   extraReducers: builder => {
     builder
       .addCase(signup.pending, (state) => {

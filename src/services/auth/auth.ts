@@ -1,3 +1,4 @@
+import {type User } from '../../features/auth/authSlice';
 import { post } from '../makeRequest';
 
 export const signUpUser = async (userData: {
@@ -5,5 +6,5 @@ export const signUpUser = async (userData: {
     email: string;
     password: string;
 }) => {
-    return await post('/auth/signup', userData);
+    return await post<User>('/auth/signup', userData);
 }

@@ -11,9 +11,10 @@ import {
 } from 'react-native';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { MaterialIcons } from '@expo/vector-icons';
 
 import { AppDispatch } from '../../store/store';
-import signup from '../../features/auth/authSlice';
+import { signup } from '../../features/auth/authSlice';
 
 const SignUpScreen = () => {
   // States.
@@ -29,10 +30,11 @@ const SignUpScreen = () => {
   const handleLogin = async () => {
     try {
       setIsLoading(true);
-      const response = await dispatch(signup({ name, email, password }));
+      // const response = await dispatch(signup({ name, email, password }));
+      const response = await dispatch(signup({name, email, password}))
       console.log('Signup response:', response);
     } catch (error) {
-      
+
     } finally {
       setIsLoading(false);
     }
@@ -63,14 +65,29 @@ const SignUpScreen = () => {
             autoCapitalize="none"
           />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={!showPassword}
-            autoCapitalize="none"
-          />
+          <View style={styles.passwordWrapper}>
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+              autoCapitalize="none"
+            />
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+            style={{
+              position: 'absolute',
+              right: 16,
+              top: 10,
+            }}
+            >
+              <MaterialIcons
+                name={showPassword ? 'visibility-off' : 'visibility'}
+                size={20}
+              />
+            </TouchableOpacity>
+          </View>
 
           <TouchableOpacity
             style={styles.button}
@@ -96,6 +113,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 30,
+  },
+  passwordWrapper: {
+    width: '100%',
   },
   input: {
     width: '100%',
