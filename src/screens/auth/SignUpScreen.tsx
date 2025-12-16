@@ -10,13 +10,14 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { AppDispatch } from '../../store/store';
-import { signup } from '../../features/auth/authSlice';
+import { InitialStateProps, signup } from '../../features/auth/authSlice';
 
 const SignUpScreen = () => {
+
   // States.
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -26,11 +27,12 @@ const SignUpScreen = () => {
 
   // Variables.
   const dispatch = useDispatch<AppDispatch>();
+  const state = useSelector((state:InitialStateProps) => state)
+  console.log('intitial state' , state)
 
   const handleLogin = async () => {
     try {
       setIsLoading(true);
-      // const response = await dispatch(signup({ name, email, password }));
       const response = await dispatch(signup({name, email, password}))
       console.log('Signup response:', response);
     } catch (error) {

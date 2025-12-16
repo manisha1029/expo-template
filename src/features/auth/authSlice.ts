@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { signUpUser } from '../../services/auth/auth';
+import mockSignUpAPI, { type SignupResponse } from '../../server';
 
 export interface User {
   name: string;
@@ -11,7 +12,7 @@ export interface User {
 export interface InitialStateProps {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
-  user: User | null;
+  user: SignupResponse['user'] | null;
   token: string | null;
 }
 
@@ -23,19 +24,17 @@ const initialState: InitialStateProps = {
 };
 
 // Async thunk
-export const signup = createAsyncThunk<User, User>('signup', async (userData:User) => {
-  const response = await signUpUser(userData)
+export const signup = createAsyncThunk<SignupResponse, User>('signup', async (userData:User) => {
+  // const response = await signUpUser(userData); 
+  const response = await mockSignUpAPI(userData) // Replace with actual API.
+  console.log('reponse from mock sign up API', response)
   return response; 
 });
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {
-    signup: (state)=>{
-      
-    }
-  },
+  reducers: {},
   extraReducers: builder => {
     builder
       .addCase(signup.pending, (state) => {
@@ -43,7 +42,8 @@ const authSlice = createSlice({
       })
       .addCase(signup.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.user = action.payload;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
       })
       .addCase(signup.rejected, (state, action) => {
         state.status = 'failed';
@@ -52,8 +52,8 @@ const authSlice = createSlice({
   }
 });
 
-export const selectLoggedInUser = (state: any) => state.auth.user;
-export const selectLoggedInUserError = (state: any) => state.auth.error;
-export const selectLoggedInUserStatus = (state: any) => state.auth.status;
-
+// export const selectLoggedInUser = (state: any) => state.auth.user;
+// export const selectLoggedInUserError = (state: any) => state.auth.error;
+// export const selectLoggedInUserStatus = (state: any) => state.auth.status;
 export default authSlice.reducer;
+
