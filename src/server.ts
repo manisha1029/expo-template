@@ -6,8 +6,9 @@ type SignupData = {
     password: string;
 };
 
-type SignupResponse = {
+export type SignupResponse = {
     user: {
+        id: string;
         name: string;
         email: string;
     };
@@ -23,6 +24,7 @@ async function mockAPI(data: SignupData): Promise<SignupResponse> {
             } else {
                 resolve({
                     user: {
+                        id: "1",
                         name: data.name,
                         email: data.email,
                     },
@@ -32,3 +34,5 @@ async function mockAPI(data: SignupData): Promise<SignupResponse> {
         }, 1500)
     })
 }
+
+export default mockAPI;
